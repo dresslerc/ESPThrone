@@ -1,0 +1,678 @@
+# Board: Seeed Studio XIAO ESP32C3
+# Definition: definitions/boards/seeed_xiao_esp32c3/manifest.yaml
+
+esphome:
+  name: espthrone
+  friendly_name: ESPThrone
+
+esp32:
+  variant: esp32c3
+
+logger:
+
+api:
+  encryption:
+    key: "tGT6gljfmndOTKeDSeSVfI4//Q2wkKvZU7+9QVIwvtM="
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: ESPThrone Fallback Hotspot
+    password: "Hxu7h9HVRKod"
+ 
+captive_portal:
+
+remote_receiver:
+  pin: GPIO4
+  dump: all
+  
+remote_transmitter:
+  pin: GPIO3
+  carrier_duty_percent: 50%
+button:
+  - platform: template
+    name: "Automatic Night Light"
+    id: eplo_e18_automatic_night_light
+    icon: mdi:lightbulb-night
+
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (
+                i == 5  ||
+                i == 7  ||
+                i == 9  ||
+                i == 11 ||
+                i == 13 ||
+                i == 41 ||
+                i == 43
+              );
+
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+            
+  - platform: template
+    name: "Auto Pre Wetting"
+    id: eplo_pre_wetting
+    icon: mdi:water
+
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (
+                i == 5  ||
+                i == 7  ||
+                i == 10 ||
+                i == 11 ||
+                i == 14 ||
+                i == 41 ||
+                i == 43
+              );
+
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+  - platform: template
+    name: "Auto Flush Toggle"
+    id: eplo_e18_auto_flush_toggle
+    icon: mdi:toilet
+
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (
+                i == 5  ||
+                i == 7  ||
+                i == 13 ||
+                i == 41 ||
+                i == 42
+              );
+
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+  - platform: template
+    name: "Silent Mode Toggle"
+    id: eplo_silent_mode_toggle
+    icon: mdi:volume-off
+
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (
+                i == 5  ||
+                i == 7  ||
+                i == 10 ||
+                i == 11 ||
+                i == 13 ||
+                i == 41 ||
+                i == 43
+              );
+
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+            
+  - platform: template
+    name: "Front Wash"
+    id: eplo_e18_front_wash
+    icon: mdi:shower-head
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (
+                i == 5  || i == 7  || i == 10 ||
+                i == 17 || i == 22 || i == 25 ||
+                i == 33 || i == 35 || i == 44
+              );
+
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+            
+  - platform: template
+    name: "Rear Wash"
+    id: eplo_e18_rear_wash
+    icon: mdi:shower-head
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (
+                i == 5  || i == 7  || i == 9  ||
+                i == 17 || i == 22 || i == 25 ||
+                i == 33 || i == 35 || i == 44
+              );
+
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+  - platform: template
+    name: "Foam Shield"
+    id: eplo_e18_foam_shield
+    icon: mdi:shield-outline
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: >-
+            0000 006D 0032 0000
+            0159 00AF
+            0016 0015 0018 0013 0016 0015 0017 0014
+            0016 0040 0016 0015 0017 0040 0016 0015
+            0016 0015 0016 0015 0016 0041 0017 0014
+            0016 0016 0017 0014 0016 0041 0016 0016
+            0017 0014 0016 0015 0016 0015 0016 0015
+            0016 0016 0016 0014 0016 0016 0015 0015
+            0016 0016 0015 0015 0016 0016 0015 0016
+            0016 0016 0015 0016 0016 0016 0015 0016
+            0016 0016 0015 0016 0016 0016 0015 0016
+            0015 0016 0015 0016 0016 0016 0015 0016
+            0015 0016 0015 0016 0015 0042 0015 0016
+            0015 0016 0015 0016 0015 0016 0015 0016
+            0158 0180
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+  - platform: template
+    name: "Lid Toggle"
+    id: eplo_e18_lid_toggle
+    icon: mdi:toilet
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0159 00AF";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (i == 5 || i == 7 || i == 10 ||
+                          i == 15 || i == 43);
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+  - platform: template
+    name: "Seat Toggle"
+    id: eplo_e18_seat_toggle
+    icon: mdi:toilet
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0159 00AF";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (i == 5 || i == 7 || i == 9 ||
+                          i == 15 || i == 43);
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+  - platform: template
+    name: "Stop"
+    id: eplo_e18_stop
+    icon: mdi:stop-circle
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: >-
+            0000 006D 0032 0000
+            0158 00AF
+            0016 0015 0017 0014 0016 0015 0016 0015
+            0017 0040 0017 0014 0016 0041 0016 0015
+            0017 0014 0016 0016 0016 0040 0017 0040
+            0017 0014 0016 0016 0017 0014 0016 0016
+            0016 0015 0016 0015 0016 0016 0015 0015
+            0016 0016 0015 0015 0016 0016 0016 0014
+            0016 0016 0016 0015 0016 0016 0015 0015
+            0016 0016 0015 0016 0015 0016 0015 0016
+            0015 0016 0015 0016 0015 0016 0016 0016
+            0015 0016 0015 0016 0015 0016 0015 0017
+            0015 0016 0015 0016 0015 0042 0015 0016
+            0015 0016 0015 0016 0015 0017 0015 0017
+            0158 0180
+          repeat:
+            times: 3
+            wait_time: 140ms
+ 
+  - platform: template
+    name: "Light"
+    id: eplo_e18_light
+    icon: mdi:lightbulb
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: "0000 006D 0032 0000 0159 00AF 0016 0016 0017 0014 0016 0015 0016 0015 0018 003F 0018 0013 0016 0041 0016 0016 0017 0014 0016 0041 0017 0014 0016 0015 0017 0014 0016 0041 0016 0015 0016 0015 0016 0015 0016 0016 0017 0014 0016 0016 0017 0015 0016 0015 0016 0016 0016 0015 0016 0016 0015 0015 0016 0016 0015 0015 0016 0016 0016 0016 0015 0016 0016 0016 0015 0015 0016 0016 0015 0016 0016 0016 0015 0016 0015 0016 0016 0016 0015 0016 0015 0017 0015 0016 0015 0042 0015 0017 0015 0017 0015 0017 0015 0017 0015 0017 0159 0180"
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+  - platform: template
+    name: "Half Flush"
+    id: eplo_e18_half_flush
+    icon: mdi:toilet
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: >-
+            0000 006D 0032 0000
+            0159 00AF
+            0017 0014 0016 0016 0016 0014 0016 0016
+            0017 0040 0016 0016 0015 0042 0016 0015
+            0016 0041 0016 0041 0016 0016 0015 0016
+            0015 0016 0015 0042 0015 0017 0015 0017
+            0015 0042 0015 0017 0015 0017 0015 0017
+            0015 0017 0015 0017 0015 0017 0015 0017
+            0014 0018 0014 0017 0014 0018 0014 0018
+            0014 0018 0014 0018 0014 0018 0014 0018
+            0013 0018 0013 0018 0014 0018 0014 0018
+            0014 0018 0013 0018 0014 0018 0014 0018
+            0013 0018 0013 0043 0013 0043 0014 0018
+            0013 0018 0013 0018 0013 0018 0014 0018
+            0157 0180
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+  - platform: template
+    name: "Full Flush"
+    id: eplo_e18_full_flush
+    icon: mdi:toilet
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: >-
+            0000 006D 0032 0000
+            015B 00AD
+            0016 0015 0016 0016 0016 0016 0015 0016
+            0016 0041 0016 0017 0015 0042 0015 0016
+            0014 0043 0015 0042 0015 0042 0015 0042
+            0015 0017 0015 0017 0015 0017 0014 0018
+            0015 0042 0015 0018 0013 0018 0014 0018
+            0014 0017 0015 0018 0014 0017 0014 0018
+            0014 0017 0014 0018 0014 0018 0013 0018
+            0014 0017 0014 0018 0013 0018 0014 0018
+            0013 0017 0014 0018 0013 0019 0014 0018
+            0013 0018 0014 0018 0013 0018 0014 0018
+            0013 0043 0014 0043 0014 0043 0014 0018
+            0013 0018 0013 0018 0013 0019 0013 0018
+            0157 0180
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+select:
+  - platform: template
+    name: "Water Temperature"
+    id: eplo_water_temperature
+    icon: mdi:thermometer-water
+    optimistic: true
+    restore_value: false
+
+    options:
+      - "Off"
+      - "86°F"
+      - "90°F"
+      - "93°F"
+      - "96°F"
+      - "99°F"
+
+    set_action:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            // EPLO E18 - Water Temperature
+            // 48 data bits plus leader and trailing pair
+            std::string bits;
+            
+            if (x == "90°F") {
+              bits = "000010100001000000000100000000000000000000100000";
+            }
+            else if (x == "93°F") {
+              bits = "000010100001000000001100000000000000000010100000";
+            }
+            else if (x == "96°F") {
+              bits = "000010100001000000000010000000000000000000100000";
+            }
+            else if (x == "99°F") {
+              bits = "000010100001000000001010000000000000000010100000";
+            }
+            else if (x == "Off") {
+              bits = "000010100001000000000000000000000000000011000000";
+            }
+            else if (x == "86°F") {
+              bits = "000010100001000000001000000000000000000000100000";
+            }
+            else {
+              return std::string("");
+            }
+
+            // Pronto header: 38 kHz, 50 pairs
+            std::string pronto =
+                "0000 006D 0032 0000 0158 00AE";
+
+            for (char bit : bits) {
+              pronto += (bit == '1')
+                  ? " 0015 0042"
+                  : " 0015 0017";
+            }
+
+            // Final timing pair
+            pronto += " 0158 0180";
+
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+  - platform: template
+    name: "Seat Temperature"
+    id: eplo_seat_temperature
+    icon: mdi:car-seat-heater
+    optimistic: true
+    restore_value: false
+
+    options:
+      - "Off"
+      - "86°F"
+      - "90°F"
+      - "93°F"
+      - "96°F"
+      - "99°F"
+
+    set_action:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string bits;
+
+            if (x == "Off") {
+              bits = "000010101001000000000000000000000000000000100000";
+            }
+            else if (x == "86°F") {
+              bits = "000010101001000000001000000000000000000010100000";
+            }
+            else if (x == "90°F") {
+              bits = "000010101001000000000100000000000000000010100000";
+            }
+            else if (x == "93°F") {
+              bits = "000010101001000000001100000000000000000001100000";
+            }
+            else if (x == "96°F") {
+              bits = "000010101001000000000010000000000000000010100000";
+            }
+            else if (x == "99°F") {
+              bits = "000010101001000000001010000000000000000001100000";
+            }
+            else {
+              return std::string("");
+            }
+
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (char bit : bits) {
+              pronto += (bit == '1')
+                  ? " 0015 0042"
+                  : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+            
+  - platform: template
+    name: "Dryer Level"
+    id: eplo_dryer_level
+    icon: mdi:fan
+    optimistic: true
+    restore_value: false
+
+    options:
+      - "0"
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+
+    set_action:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            // EPLO E18 Dryer - 6 levels (0 through 5)
+            std::string bits;
+
+            if (x == "0") {
+              bits = "000010101100000001000000000000000000000010100000";
+            }
+            else if (x == "1") {
+              bits = "000010101100000001001000000000000000000001100000";
+            }
+            else if (x == "2") {
+              bits = "000010101100000001000100000000000000000001100000";
+            }
+            else if (x == "3") {
+              bits = "000010101100000001001100000000000000000011100000";
+            }
+            else if (x == "4") {
+              bits = "000010101100000001000010000000000000000001100000";
+            }
+            else if (x == "5") {
+              bits = "000010101100000001001010000000000000000011100000";
+            }
+            else {
+              return std::string("");
+            }
+
+            // Pronto header: 38 kHz, 50 timing pairs
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (char bit : bits) {
+              pronto += (bit == '1')
+                  ? " 0015 0042"
+                  : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+
+  - platform: template
+    name: "Spray Position"
+    id: eplo_spray_position
+    icon: mdi:arrow-up-down
+    optimistic: true
+    restore_value: false
+
+    options:
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+
+    set_action:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            // EPLO E18 Spray Position
+            // Five positions, decoded from original IR captures
+            std::string bits;
+
+            if (x == "1") {
+              bits = "000010100110000000001000000000000000000010100000";
+            }
+            else if (x == "2") {
+              bits = "000010100110000000000100000000000000000010100000";
+            }
+            else if (x == "3") {
+              bits = "000010100110000000001100000000000000000001100000";
+            }
+            else if (x == "4") {
+              bits = "000010100110000000000010000000000000000010100000";
+            }
+            else if (x == "5") {
+              bits = "000010100110000000001010000000000000000001100000";
+            }
+            else {
+              return std::string("");
+            }
+
+            // Standard EPLO E18 Pronto frame
+            // 1 leader + 48 data bits + 1 trailer = 50 pairs
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (char bit : bits) {
+              pronto += (bit == '1')
+                  ? " 0015 0042"
+                  : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms
+
+  - platform: template
+    name: "pray Pressure"
+    id: eplo_spray_pressure
+    icon: mdi:water
+    optimistic: true
+    restore_value: false
+
+    options:
+      - "Level 1"
+      - "Level 2"
+      - "Level 3"
+
+    set_action:
+      - remote_transmitter.transmit_pronto:
+          data: !lambda |-
+            std::string pronto = "0000 006D 0032 0000 0158 00AE";
+
+            for (int i = 1; i <= 48; i++) {
+              bool bit = (i == 5 || i == 7 || i == 11);
+
+              if (x == "Level 1") {
+                if (i == 21 || i == 43)
+                  bit = true;
+              }
+              else if (x == "Level 2") {
+                if (i == 22 || i == 43)
+                  bit = true;
+              }
+              else if (x == "Level 3") {
+                if (i == 21 || i == 22 ||
+                    i == 43 || i == 44)
+                  bit = true;
+              }
+
+              pronto += bit ? " 0015 0042" : " 0015 0017";
+            }
+
+            pronto += " 0158 0180";
+            return pronto;
+
+          repeat:
+            times: 3
+            wait_time: 140ms            
+ 
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    id: eplo_wifi_signal
+    update_interval: 60s
+    entity_category: diagnostic
+
+  - platform: uptime
+    name: "Uptime"
+    id: eplo_uptime
+    update_interval: 60s
+    entity_category: diagnostic
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+      entity_category: diagnostic
+      
+  - platform: template
+    name: "Beep Guide"
+    icon: mdi:information-outline
+    lambda: |-
+      return {"One beep = On, Two Beeps = off"};
+    update_interval: 60s
+binary_sensor:
+  - platform: status
+    name: "Connection Status"
+    entity_category: diagnostic
+
